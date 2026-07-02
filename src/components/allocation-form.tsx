@@ -23,13 +23,6 @@ import {
   useEquipamentosDisponiveis,
 } from "@/hooks/use-equipamentos";
 
-/**
- * Formulário de Alocação de Equipamentos.
- *
- * Requisito do dropdown:
- *  - Cada opção exibe exatamente:  "Código: [código] - Tipo: [tipo]"
- *  - O value enviado no submit é o ID (uuid) do equipamento.
- */
 export function AllocationForm() {
   const { data: disponiveis, isLoading, isError } = useEquipamentosDisponiveis();
   const criarAlocacao = useCriarAlocacao();
@@ -37,18 +30,26 @@ export function AllocationForm() {
   const [equipamentoId, setEquipamentoId] = React.useState<string>("");
   const [equipe, setEquipe] = React.useState("");
   const [responsavel, setResponsavel] = React.useState("");
+  const [operador, setOperador] = React.useState("");
+  const [crs, setCrs] = React.useState("");
+  const [espacamento, setEspacamento] = React.useState("");
   const [rodovia, setRodovia] = React.useState("");
   const [kmInicial, setKmInicial] = React.useState("");
   const [kmFinal, setKmFinal] = React.useState("");
+  const [prazoPrevisto, setPrazoPrevisto] = React.useState("");
   const [descricao, setDescricao] = React.useState("");
 
   function limpar() {
     setEquipamentoId("");
     setEquipe("");
     setResponsavel("");
+    setOperador("");
+    setCrs("");
+    setEspacamento("");
     setRodovia("");
     setKmInicial("");
     setKmFinal("");
+    setPrazoPrevisto("");
     setDescricao("");
   }
 
@@ -63,15 +64,28 @@ export function AllocationForm() {
       toast.error("Informe a equipe e o responsável.");
       return;
     }
+    if (!operador.trim()) {
+      toast.error("Informe o operador responsável.");
+      return;
+    }
+    if (!prazoPrevisto) {
+      toast.error("Informe o prazo previsto de término.");
+      return;
+    }
 
     criarAlocacao.mutate(
       {
-        equipamento_id: equipamentoId, // <- value do select é o ID
+        equipamento_id: equipamentoId,
         equipe: equipe.trim(),
         responsavel: responsavel.trim(),
+        operador: operador.trim(),
+        crs: crs.trim() || undefined,
+        espacamento: espacamento.trim() || undefined,
         rodovia: rodovia.trim() || undefined,
         km_inicial: kmInicial ? Number(kmInicial) : null,
         km_final: kmFinal ? Number(kmFinal) : null,
+        prazo_previsto: prazoPrevisto || null,
+        percentual: 0,
         descricao: descricao.trim() || undefined,
       },
       {
@@ -109,7 +123,6 @@ export function AllocationForm() {
               </SelectTrigger>
               <SelectContent>
                 {disponiveis?.map((eq) => (
-                  // value = ID do equipamento; texto no formato exigido
                   <SelectItem key={eq.id} value={eq.id}>
                     {`Código: ${eq.codigo} - Tipo: ${eq.tipo}`}
                   </SelectItem>
@@ -143,10 +156,56 @@ export function AllocationForm() {
               <Label htmlFor="responsavel">Responsável</Label>
               <Input
                 id="responsavel"
-                placeholder="Nome do líder de campo"
+                placeholder="Líder de campo"
                 value={responsavel}
                 onChange={(e) => setResponsavel(e.target.value)}
                 required
+              />
+            </div>
+          </div>
+
+          {/* v2: Operador + Prazo previsto */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label htmlFor="operador">Operador responsável</Label>
+              <Input
+                id="operador"
+                placeholder="Nome do operador"
+                value={operador}
+                onChange={(e) => setOperador(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="prazo-previsto">Prazo previsto de término</Label>
+              <Input
+                id="prazo-previsto"
+                type="date"
+                value={prazoPrevisto}
+                onChange={(e) => setPrazoPrevisto(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          {/* v3: CRS + Espaçamento */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label htmlFor="crs">CRS</Label>
+              <Input
+                id="crs"
+                placeholder="Ex.: SIRGAS 2000 / UTM 23S"
+                value={crs}
+                onChange={(e) => setCrs(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="espacamento">Espaçamento</Label>
+              <Input
+                id="espacamento"
+                placeholder="Ex.: 20m"
+                value={espacamento}
+                onChange={(e) => setEspacamento(e.target.value)}
               />
             </div>
           </div>

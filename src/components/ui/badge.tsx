@@ -15,6 +15,8 @@ const badgeVariants = cva(
         alocado: "border-transparent bg-status-alocado/15 text-status-alocado",
         manutencao:
           "border-transparent bg-status-manutencao/15 text-status-manutencao",
+        ocorrencia:
+          "border-transparent bg-status-ocorrencia/15 text-status-ocorrencia",
       },
     },
     defaultVariants: { variant: "default" },

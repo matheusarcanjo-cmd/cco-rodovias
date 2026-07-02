@@ -1,13 +1,16 @@
-// Tipos do banco. Para gerar automaticamente a partir do seu projeto:
-// npx supabase gen types typescript --project-id SEU_PROJECT_ID > src/types/database.ts
-//
-// IMPORTANTE: use `type` (não `interface`) — o supabase-js exige que as linhas
-// satisfaçam Record<string, unknown>, o que interfaces não fazem implicitamente.
-
 export type EquipamentoStatus =
   | "Disponível"
   | "Alocado"
-  | "Alocado (manutenção)";
+  | "Alocado (manutenção)"
+  | "Alocado (Ocorrência)";
+
+export type UserRole = "admin" | "operador" | "viewer";
+
+export type MotivoOcorrencia =
+  | "Chuva"
+  | "Manutenção no trecho"
+  | "Obra"
+  | "Outros";
 
 export type Equipamento = {
   id: string;
@@ -15,6 +18,7 @@ export type Equipamento = {
   tipo: string;
   status: EquipamentoStatus;
   observacoes: string | null;
+  localizacao: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -28,6 +32,16 @@ export type Alocacao = {
   km_inicial: number | null;
   km_final: number | null;
   descricao: string | null;
+  operador: string | null;
+  crs: string | null;
+  espacamento: string | null;
+  prazo_previsto: string | null;
+  percentual: number;
+  motivo_ocorrencia: MotivoOcorrencia | null;
+  manutencao_inicio: string | null;
+  manutencao_responsavel: string | null;
+  manutencao_prazo: string | null;
+  manutencao_detalhamento: string | null;
   alocada_em: string;
   encerrada_em: string | null;
   created_by: string | null;
@@ -49,8 +63,7 @@ export type Database = {
           tipo: string;
           status?: EquipamentoStatus;
           observacoes?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          localizacao?: string | null;
         };
         Update: {
           id?: string;
@@ -58,8 +71,7 @@ export type Database = {
           tipo?: string;
           status?: EquipamentoStatus;
           observacoes?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          localizacao?: string | null;
         };
         Relationships: [];
       };
@@ -74,10 +86,15 @@ export type Database = {
           km_inicial?: number | null;
           km_final?: number | null;
           descricao?: string | null;
+          operador?: string | null;
+          crs?: string | null;
+          espacamento?: string | null;
+          prazo_previsto?: string | null;
+          percentual?: number;
+          motivo_ocorrencia?: MotivoOcorrencia | null;
           alocada_em?: string;
           encerrada_em?: string | null;
           created_by?: string | null;
-          created_at?: string;
         };
         Update: {
           id?: string;
@@ -88,10 +105,19 @@ export type Database = {
           km_inicial?: number | null;
           km_final?: number | null;
           descricao?: string | null;
+          operador?: string | null;
+          crs?: string | null;
+          espacamento?: string | null;
+          prazo_previsto?: string | null;
+          percentual?: number;
+          motivo_ocorrencia?: MotivoOcorrencia | null;
+          manutencao_inicio?: string | null;
+          manutencao_responsavel?: string | null;
+          manutencao_prazo?: string | null;
+          manutencao_detalhamento?: string | null;
           alocada_em?: string;
           encerrada_em?: string | null;
           created_by?: string | null;
-          created_at?: string;
         };
         Relationships: [
           {
@@ -103,21 +129,46 @@ export type Database = {
           },
         ];
       };
+      user_roles: {
+        Row: { id: string; email: string; role: UserRole; created_at: string };
+        Insert: { id?: string; email: string; role?: UserRole };
+        Update: { id?: string; email?: string; role?: UserRole };
+        Relationships: [];
+      };
     };
-    Views: {
-      [_ in never]: never;
-    };
+    Views: { [_ in never]: never };
     Functions: {
       alternar_manutencao: {
         Args: { p_equipamento_id: string };
         Returns: Equipamento;
       };
+      iniciar_manutencao: {
+        Args: {
+          p_equipamento_id: string;
+          p_responsavel: string;
+          p_prazo?: string | null;
+          p_detalhamento?: string | null;
+        };
+        Returns: Equipamento;
+      };
+      concluir_manutencao: {
+        Args: { p_equipamento_id: string };
+        Returns: Equipamento;
+      };
+      registrar_ocorrencia: {
+        Args: { p_equipamento_id: string; p_motivo: string };
+        Returns: Equipamento;
+      };
+      resolver_ocorrencia: {
+        Args: { p_equipamento_id: string };
+        Returns: Equipamento;
+      };
+      get_user_role: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
     };
-    Enums: {
-      equipamento_status: EquipamentoStatus;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    Enums: { equipamento_status: EquipamentoStatus };
+    CompositeTypes: { [_ in never]: never };
   };
 };

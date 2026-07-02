@@ -44,6 +44,7 @@ export default {
           disponivel: "hsl(var(--status-disponivel))",
           alocado: "hsl(var(--status-alocado))",
           manutencao: "hsl(var(--status-manutencao))",
+          ocorrencia: "hsl(var(--status-ocorrencia))",
         },
       },
       borderRadius: {

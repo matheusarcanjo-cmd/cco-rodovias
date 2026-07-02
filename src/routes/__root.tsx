@@ -1,8 +1,10 @@
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { Loader2, LogOut, TrafficCone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import { useRole } from "@/hooks/use-role";
 import { LoginScreen } from "@/components/login-screen";
 
 export const Route = createRootRoute({
@@ -11,6 +13,7 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   const { session, loading, signOut, user } = useAuth();
+  const { role } = useRole();
 
   if (loading) {
     return (
@@ -40,8 +43,11 @@ function RootLayout() {
           </Link>
 
           <nav className="flex items-center gap-2 sm:gap-3">
-            <span className="hidden max-w-48 truncate text-sm text-muted-foreground md:inline">
-              {user?.email}
+            <span className="hidden items-center gap-2 text-sm text-muted-foreground md:inline-flex">
+              <span className="max-w-48 truncate">{user?.email}</span>
+              <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
+                {role}
+              </Badge>
             </span>
             {/* Toggle de tema claro/escuro */}
             <ThemeToggle />
