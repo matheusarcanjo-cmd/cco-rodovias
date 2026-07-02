@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Identidade visual: sinalização rodoviária.
+ * Amarelo-sinal como cor primária, cinza-asfalto como base do modo escuro.
+ */
+@layer base {
+  :root {
+    --background: 45 30% 97%;
+    --foreground: 220 20% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 12%;
+    --primary: 42 96% 50%;
+    --primary-foreground: 220 25% 10%;
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 20%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 10% 42%;
+    --accent: 42 90% 92%;
+    --accent-foreground: 32 80% 25%;
+    --destructive: 0 78% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 87%;
+    --input: 220 13% 85%;
+    --ring: 42 96% 45%;
+    --radius: 0.5rem;
+
+    --status-disponivel: 152 65% 36%;
+    --status-alocado: 214 85% 45%;
+    --status-manutencao: 28 92% 48%;
+  }
+
+  .dark {
+    /* Asfalto à noite */
+    --background: 222 18% 9%;
+    --foreground: 45 20% 92%;
+    --card: 222 16% 12%;
+    --card-foreground: 45 20% 92%;
+    --primary: 44 95% 55%;
+    --primary-foreground: 222 25% 8%;
+    --secondary: 222 12% 18%;
+    --secondary-foreground: 45 15% 85%;
+    --muted: 222 12% 16%;
+    --muted-foreground: 220 8% 60%;
+    --accent: 44 60% 16%;
+    --accent-foreground: 44 90% 75%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 12% 20%;
+    --input: 222 12% 22%;
+    --ring: 44 95% 55%;
+
+    --status-disponivel: 152 60% 45%;
+    --status-alocado: 214 90% 60%;
+    --status-manutencao: 30 95% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+/* Faixa de sinalização — assinatura visual do CCO */
+.hazard-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    hsl(var(--primary)),
+    hsl(var(--primary)) 12px,
+    hsl(220 20% 12%) 12px,
+    hsl(220 20% 12%) 24px
+  );
+  height: 4px;
+}
