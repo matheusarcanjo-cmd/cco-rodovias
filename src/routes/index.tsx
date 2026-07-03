@@ -92,15 +92,14 @@ function DashboardPage() {
         />
       </div>
 
-      {/* Formulário (somente admin/operador) + alocações ativas */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {canAct && <AllocationForm />}
-        <ActiveAllocations />
-      </div>
+      {/* Formulário (somente admin/operador) */}
+      {canAct && <AllocationForm />}
 
       <EquipmentTable />
 
-      <ActivityHistory />
+      <ActiveAllocations />
+
+      {canAct && <ActivityHistory />}
     </div>
   );
 }
