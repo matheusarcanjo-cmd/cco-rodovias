@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AllocationForm } from "@/components/allocation-form";
 import { ActiveAllocations } from "@/components/active-allocations";
 import { EquipmentTable } from "@/components/equipment-table";
+import { ActivityHistory } from "@/components/activity-history";
 import { useEquipamentos } from "@/hooks/use-equipamentos";
 import { useRole } from "@/hooks/use-role";
 
@@ -98,6 +99,8 @@ function DashboardPage() {
       </div>
 
       <EquipmentTable />
+
+      <ActivityHistory />
     </div>
   );
 }

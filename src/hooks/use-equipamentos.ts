@@ -287,3 +287,54 @@ export function useRemoverEquipamento() {
     onSuccess: invalidate,
   });
 }
+
+// --- Editar alocação ativa (sem mudar status) ---
+export interface EditarAlocacaoArgs {
+  alocacaoId: string;
+  operador?: string | null;
+  crs?: string | null;
+  espacamento?: string | null;
+  prazo_previsto?: string | null;
+  descricao?: string | null;
+}
+
+export function useEditarAlocacao() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (args: EditarAlocacaoArgs): Promise<Alocacao> => {
+      const { data, error } = await supabase
+        .from("alocacoes")
+        .update({
+          operador: args.operador,
+          crs: args.crs,
+          espacamento: args.espacamento,
+          prazo_previsto: args.prazo_previsto,
+          descricao: args.descricao,
+        })
+        .eq("id", args.alocacaoId)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: invalidate,
+  });
+}
+
+// --- Histórico de atividades ---
+import type { HistoricoAtividade } from "@/types/database";
+
+export function useHistoricoAtividades() {
+  return useQuery({
+    queryKey: ["historico"],
+    queryFn: async (): Promise<HistoricoAtividade[]> => {
+      const { data, error } = await supabase
+        .from("historico_atividades")
+        .select("*")
+        .order("criado_em", { ascending: false })
+        .limit(100);
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+}

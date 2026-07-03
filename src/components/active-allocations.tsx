@@ -24,6 +24,7 @@ import {
 import { useRole } from "@/hooks/use-role";
 import { ProgressModal } from "@/components/progress-modal";
 import { OcorrenciaModal } from "@/components/ocorrencia-modal";
+import { EditAllocationModal } from "@/components/edit-allocation-modal";
 import type { AlocacaoComEquipamento, EquipamentoStatus } from "@/types/database";
 
 const dataCurta = new Intl.DateTimeFormat("pt-BR", {
@@ -148,6 +149,8 @@ function AllocationCard({
       {/* Actions */}
       {canAct && (
         <div className="flex flex-wrap gap-2">
+          <EditAllocationModal alocacao={a} />
+
           <ProgressModal
             alocacaoId={a.id}
             codigoEquip={a.equipamentos?.codigo ?? "—"}

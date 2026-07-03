@@ -47,6 +47,20 @@ export type AlocacaoComEquipamento = Alocacao & {
   equipamentos: Pick<Equipamento, "id" | "codigo" | "tipo" | "status"> | null;
 };
 
+export type TipoHistorico = "status_change" | "ocorrencia" | "alocacao" | "manutencao";
+
+export type HistoricoAtividade = {
+  id: string;
+  tipo: TipoHistorico;
+  equipamento_id: string | null;
+  equipamento_codigo: string | null;
+  status_anterior: string | null;
+  status_novo: string | null;
+  detalhes: Record<string, unknown>;
+  usuario_email: string | null;
+  criado_em: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -122,6 +136,32 @@ export type Database = {
         Row: { id: string; email: string; role: UserRole; created_at: string };
         Insert: { id?: string; email: string; role?: UserRole };
         Update: { id?: string; email?: string; role?: UserRole };
+        Relationships: [];
+      };
+      historico_atividades: {
+        Row: HistoricoAtividade;
+        Insert: {
+          id?: string;
+          tipo: string;
+          equipamento_id?: string | null;
+          equipamento_codigo?: string | null;
+          status_anterior?: string | null;
+          status_novo?: string | null;
+          detalhes?: Record<string, unknown>;
+          usuario_email?: string | null;
+          criado_em?: string;
+        };
+        Update: {
+          id?: string;
+          tipo?: string;
+          equipamento_id?: string | null;
+          equipamento_codigo?: string | null;
+          status_anterior?: string | null;
+          status_novo?: string | null;
+          detalhes?: Record<string, unknown>;
+          usuario_email?: string | null;
+          criado_em?: string;
+        };
         Relationships: [];
       };
     };
