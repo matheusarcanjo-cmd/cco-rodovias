@@ -1,7 +1,7 @@
 export type EquipamentoStatus =
   | "Disponível"
   | "Alocado"
-  | "Alocado (manutenção)"
+  | "Manutenção"
   | "Alocado (Ocorrência)";
 
 export type UserRole = "admin" | "operador" | "viewer";
@@ -19,6 +19,10 @@ export type Equipamento = {
   status: EquipamentoStatus;
   observacoes: string | null;
   localizacao: string | null;
+  manutencao_inicio: string | null;
+  manutencao_responsavel: string | null;
+  manutencao_prazo: string | null;
+  manutencao_detalhamento: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -26,11 +30,6 @@ export type Equipamento = {
 export type Alocacao = {
   id: string;
   equipamento_id: string;
-  equipe: string;
-  responsavel: string;
-  rodovia: string | null;
-  km_inicial: number | null;
-  km_final: number | null;
   descricao: string | null;
   operador: string | null;
   crs: string | null;
@@ -38,10 +37,6 @@ export type Alocacao = {
   prazo_previsto: string | null;
   percentual: number;
   motivo_ocorrencia: MotivoOcorrencia | null;
-  manutencao_inicio: string | null;
-  manutencao_responsavel: string | null;
-  manutencao_prazo: string | null;
-  manutencao_detalhamento: string | null;
   alocada_em: string;
   encerrada_em: string | null;
   created_by: string | null;
@@ -64,6 +59,10 @@ export type Database = {
           status?: EquipamentoStatus;
           observacoes?: string | null;
           localizacao?: string | null;
+          manutencao_inicio?: string | null;
+          manutencao_responsavel?: string | null;
+          manutencao_prazo?: string | null;
+          manutencao_detalhamento?: string | null;
         };
         Update: {
           id?: string;
@@ -72,6 +71,10 @@ export type Database = {
           status?: EquipamentoStatus;
           observacoes?: string | null;
           localizacao?: string | null;
+          manutencao_inicio?: string | null;
+          manutencao_responsavel?: string | null;
+          manutencao_prazo?: string | null;
+          manutencao_detalhamento?: string | null;
         };
         Relationships: [];
       };
@@ -80,11 +83,6 @@ export type Database = {
         Insert: {
           id?: string;
           equipamento_id: string;
-          equipe: string;
-          responsavel: string;
-          rodovia?: string | null;
-          km_inicial?: number | null;
-          km_final?: number | null;
           descricao?: string | null;
           operador?: string | null;
           crs?: string | null;
@@ -99,11 +97,6 @@ export type Database = {
         Update: {
           id?: string;
           equipamento_id?: string;
-          equipe?: string;
-          responsavel?: string;
-          rodovia?: string | null;
-          km_inicial?: number | null;
-          km_final?: number | null;
           descricao?: string | null;
           operador?: string | null;
           crs?: string | null;
@@ -111,10 +104,6 @@ export type Database = {
           prazo_previsto?: string | null;
           percentual?: number;
           motivo_ocorrencia?: MotivoOcorrencia | null;
-          manutencao_inicio?: string | null;
-          manutencao_responsavel?: string | null;
-          manutencao_prazo?: string | null;
-          manutencao_detalhamento?: string | null;
           alocada_em?: string;
           encerrada_em?: string | null;
           created_by?: string | null;

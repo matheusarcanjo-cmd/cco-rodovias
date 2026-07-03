@@ -4,10 +4,8 @@ import {
   Calendar,
   CheckCircle2,
   Loader2,
-  MapPin,
   SquareCheckBig,
   User,
-  Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +40,7 @@ const dataSimples = new Intl.DateTimeFormat("pt-BR", {
 });
 
 function StatusIndicator({ status }: { status: EquipamentoStatus }) {
-  if (status === "Alocado (manutenção)") {
+  if (status === "Manutenção") {
     return <Badge variant="manutencao">Em manutenção</Badge>;
   }
   if (status === "Alocado (Ocorrência)") {
@@ -120,22 +118,10 @@ function AllocationCard({
 
         {/* Meta info */}
         <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" />
-            {a.equipe} · {a.responsavel}
-          </span>
           {a.operador && (
             <span className="inline-flex items-center gap-1">
               <User className="h-3.5 w-3.5" />
               {a.operador}
-            </span>
-          )}
-          {a.rodovia && (
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" />
-              {a.rodovia}
-              {a.km_inicial != null && ` km ${a.km_inicial}`}
-              {a.km_final != null && ` a ${a.km_final}`}
             </span>
           )}
           <span>desde {dataCurta.format(new Date(a.alocada_em))}</span>

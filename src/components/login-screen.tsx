@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Loader2, TrafficCone } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,16 +46,23 @@ export function LoginScreen() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <div className="hazard-stripe" aria-hidden />
+    <div className="flex min-h-dvh flex-col bg-[#0f1629]">
       <div className="flex justify-end p-4">
         <ThemeToggle />
       </div>
-      <div className="flex flex-1 items-center justify-center p-4">
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 p-4">
+        {/* Banner Strata */}
+        <div className="w-full max-w-lg overflow-hidden rounded-xl shadow-2xl">
+          <img
+            src="/strata-banner.png"
+            alt="Strata Engenharia — Frota de equipamentos"
+            className="h-auto w-full object-cover"
+          />
+        </div>
+
         <Card className="w-full max-w-sm">
           <CardHeader className="items-center text-center">
-            <TrafficCone className="h-8 w-8 text-primary" />
-            <CardTitle className="text-xl">CCO Rodovias</CardTitle>
+            <CardTitle className="text-xl">CCO - Strata Engenharia</CardTitle>
             <CardDescription>
               {isRegister
                 ? "Crie sua conta para acessar o painel."
@@ -70,7 +77,7 @@ export function LoginScreen() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="voce@empresa.com.br"
+                  placeholder="voce@strata.com.br"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required

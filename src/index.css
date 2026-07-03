@@ -31,7 +31,7 @@
 
     --status-disponivel: 152 65% 36%;
     --status-alocado: 214 85% 45%;
-    --status-manutencao: 28 92% 48%;
+    --status-manutencao: 0 78% 48%;
     --status-ocorrencia: 45 96% 48%;
   }
 
@@ -57,7 +57,7 @@
 
     --status-disponivel: 152 60% 45%;
     --status-alocado: 214 90% 60%;
-    --status-manutencao: 30 95% 58%;
+    --status-manutencao: 0 72% 55%;
     --status-ocorrencia: 48 95% 58%;
   }
 }

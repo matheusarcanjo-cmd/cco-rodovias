@@ -50,7 +50,7 @@ function DashboardPage() {
   const alocados =
     equipamentos?.filter((e) => e.status === "Alocado").length ?? "—";
   const manutencao =
-    equipamentos?.filter((e) => e.status === "Alocado (manutenção)").length ?? "—";
+    equipamentos?.filter((e) => e.status === "Manutenção").length ?? "—";
   const ocorrencias =
     equipamentos?.filter((e) => e.status === "Alocado (Ocorrência)").length ?? "—";
 

@@ -18,6 +18,7 @@ import {
 import { useRole } from "@/hooks/use-role";
 import { ManutencaoModal } from "@/components/manutencao-modal";
 import { AddEquipmentModal } from "@/components/add-equipment-modal";
+import { EditEquipmentModal } from "@/components/edit-equipment-modal";
 import { EquipmentDetailModal } from "@/components/equipment-detail-modal";
 import type { Equipamento, EquipamentoStatus } from "@/types/database";
 
@@ -27,7 +28,7 @@ const STATUS_VARIANT: Record<
 > = {
   Disponível: "disponivel",
   Alocado: "alocado",
-  "Alocado (manutenção)": "manutencao",
+  "Manutenção": "manutencao",
   "Alocado (Ocorrência)": "ocorrencia",
 };
 
@@ -53,11 +54,11 @@ function LocationTag({ localizacao }: { localizacao: string | null }) {
 function MaintenanceAction({ equipamento }: { equipamento: Equipamento }) {
   const concluir = useConcluirManutencao();
 
-  if (equipamento.status === "Disponível" || equipamento.status === "Alocado (Ocorrência)") {
-    return null;
-  }
+  // Ocorrência: sem ação de manutenção
+  if (equipamento.status === "Alocado (Ocorrência)") return null;
 
-  if (equipamento.status === "Alocado (manutenção)") {
+  // Em manutenção: botão de concluir
+  if (equipamento.status === "Manutenção") {
     return (
       <Button
         size="sm"
@@ -65,8 +66,10 @@ function MaintenanceAction({ equipamento }: { equipamento: Equipamento }) {
         onClick={(e) => {
           e.stopPropagation();
           concluir.mutate(equipamento.id, {
-            onSuccess: () =>
-              toast.success(`${equipamento.codigo} voltou à operação normal.`),
+            onSuccess: (eq) =>
+              toast.success(
+                `${eq.codigo} voltou para ${eq.status === "Alocado" ? "operação" : "disponível"}.`
+              ),
             onError: (err) => toast.error(err.message),
           });
         }}
@@ -83,7 +86,7 @@ function MaintenanceAction({ equipamento }: { equipamento: Equipamento }) {
     );
   }
 
-  // status === "Alocado"
+  // Disponível OU Alocado: pode sinalizar manutenção
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <ManutencaoModal
@@ -176,10 +179,14 @@ export function EquipmentTable() {
               <CardDescription>
                 Clique em um equipamento para ver detalhes.
                 {canAct &&
-                  " Equipamentos em campo podem ser sinalizados em manutenção."}
+                  " Qualquer equipamento pode ser sinalizado em manutenção."}
               </CardDescription>
             </div>
-            {isAdmin && <AddEquipmentModal />}
+            {isAdmin && (
+              <div className="flex items-center gap-2">
+                <AddEquipmentModal />
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -220,6 +227,7 @@ export function EquipmentTable() {
                 {canAct && (
                   <div className="mt-3 flex items-center gap-2">
                     <MaintenanceAction equipamento={eq} />
+                    {isAdmin && <EditEquipmentModal equipamento={eq} />}
                     {isAdmin && <RemoveButton equipamento={eq} />}
                   </div>
                 )}
@@ -262,6 +270,7 @@ export function EquipmentTable() {
                       <td className="py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <MaintenanceAction equipamento={eq} />
+                          {isAdmin && <EditEquipmentModal equipamento={eq} />}
                           {isAdmin && <RemoveButton equipamento={eq} />}
                         </div>
                       </td>

@@ -88,11 +88,6 @@ function useInvalidateAll() {
 
 export interface NovaAlocacao {
   equipamento_id: string;
-  equipe: string;
-  responsavel: string;
-  rodovia?: string;
-  km_inicial?: number | null;
-  km_final?: number | null;
   descricao?: string;
   operador?: string;
   crs?: string;
@@ -242,6 +237,34 @@ export function useAdicionarEquipamento() {
       const { data, error } = await supabase
         .from("equipamentos")
         .insert({ codigo: novo.codigo, tipo: novo.tipo, observacoes: novo.observacoes ?? null })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: invalidate,
+  });
+}
+
+export interface EditarEquipamentoArgs {
+  id: string;
+  codigo: string;
+  tipo: string;
+  observacoes?: string | null;
+}
+
+export function useEditarEquipamento() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (args: EditarEquipamentoArgs): Promise<Equipamento> => {
+      const { data, error } = await supabase
+        .from("equipamentos")
+        .update({
+          codigo: args.codigo,
+          tipo: args.tipo,
+          observacoes: args.observacoes ?? null,
+        })
+        .eq("id", args.id)
         .select()
         .single();
       if (error) throw new Error(error.message);

@@ -1,5 +1,5 @@
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
-import { Loader2, LogOut, TrafficCone } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -36,9 +36,9 @@ function RootLayout() {
       <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur">
         <div className="container flex h-14 items-center justify-between gap-3">
           <Link to="/" className="flex items-center gap-2">
-            <TrafficCone className="h-5 w-5 text-primary" />
+            <img src="/strata-banner.png" alt="Strata" className="h-7 rounded object-cover" />
             <span className="font-display text-base font-bold sm:text-lg">
-              CCO Rodovias
+              CCO - Strata Engenharia
             </span>
           </Link>
 

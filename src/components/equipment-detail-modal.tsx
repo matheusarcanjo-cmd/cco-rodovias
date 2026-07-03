@@ -6,7 +6,6 @@ import {
   MapPin,
   Ruler,
   User,
-  Users,
   Wrench,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,7 @@ const STATUS_VARIANT: Record<
 > = {
   Disponível: "disponivel",
   Alocado: "alocado",
-  "Alocado (manutenção)": "manutencao",
+  "Manutenção": "manutencao",
   "Alocado (Ocorrência)": "ocorrencia",
 };
 
@@ -91,18 +90,19 @@ export function EquipmentDetailModal({
   open,
   onOpenChange,
 }: EquipmentDetailModalProps) {
-  const isAlocado =
+  const temAlocacao =
     equipamento?.status === "Alocado" ||
-    equipamento?.status === "Alocado (manutenção)" ||
+    equipamento?.status === "Manutenção" ||
     equipamento?.status === "Alocado (Ocorrência)";
 
   const { data: alocacao, isLoading } = useAlocacaoDoEquipamento(
-    isAlocado ? equipamento?.id ?? null : null
+    temAlocacao ? equipamento?.id ?? null : null
   );
 
   if (!equipamento) return null;
 
-  const emManutencao = equipamento.status === "Alocado (manutenção)";
+  const emManutencao = equipamento.status === "Manutenção";
+  const isAlocado = equipamento.status === "Alocado" || equipamento.status === "Alocado (Ocorrência)";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -142,7 +142,7 @@ export function EquipmentDetailModal({
         )}
 
         {/* Carregando dados da alocação */}
-        {isAlocado && isLoading && (
+        {temAlocacao && isLoading && (
           <p className="py-6 text-center text-sm text-muted-foreground">
             Carregando informações...
           </p>
@@ -187,20 +187,7 @@ export function EquipmentDetailModal({
                       : "—"
                   }
                 />
-                <InfoRow
-                  icon={Users}
-                  label="Equipe"
-                  value={`${alocacao.equipe} · ${alocacao.responsavel}`}
-                />
               </div>
-
-              {alocacao.rodovia && (
-                <InfoRow
-                  icon={MapPin}
-                  label="Trecho"
-                  value={`${alocacao.rodovia}${alocacao.km_inicial != null ? ` km ${alocacao.km_inicial}` : ""}${alocacao.km_final != null ? ` a ${alocacao.km_final}` : ""}`}
-                />
-              )}
 
               <div className="mt-2 border-t pt-3">
                 <p className="mb-1 text-xs text-muted-foreground">% concluído</p>
@@ -225,8 +212,8 @@ export function EquipmentDetailModal({
           </div>
         )}
 
-        {/* Info de manutenção */}
-        {emManutencao && alocacao && (
+        {/* Info de manutenção (lê do equipamento, que agora tem os campos) */}
+        {emManutencao && (
           <div className="grid gap-0.5">
             <h3 className="mb-1 text-sm font-semibold text-muted-foreground">
               Informações da manutenção
@@ -237,23 +224,23 @@ export function EquipmentDetailModal({
                   icon={Clock}
                   label="Data de início da manutenção"
                   value={
-                    alocacao.manutencao_inicio
-                      ? dataCompleta.format(new Date(alocacao.manutencao_inicio))
+                    equipamento.manutencao_inicio
+                      ? dataCompleta.format(new Date(equipamento.manutencao_inicio))
                       : "—"
                   }
                 />
                 <InfoRow
                   icon={User}
                   label="Responsável"
-                  value={alocacao.manutencao_responsavel || "—"}
+                  value={equipamento.manutencao_responsavel || "—"}
                 />
                 <InfoRow
                   icon={Calendar}
                   label="Data de término previsto"
                   value={
-                    alocacao.manutencao_prazo
+                    equipamento.manutencao_prazo
                       ? dataSimples.format(
-                          new Date(alocacao.manutencao_prazo + "T12:00:00")
+                          new Date(equipamento.manutencao_prazo + "T12:00:00")
                         )
                       : "—"
                   }
@@ -261,31 +248,34 @@ export function EquipmentDetailModal({
                 <InfoRow
                   icon={Wrench}
                   label="Detalhamento"
-                  value={alocacao.manutencao_detalhamento || "—"}
+                  value={equipamento.manutencao_detalhamento || "—"}
                 />
               </div>
             </div>
 
-            {/* Também mostra a alocação de fundo */}
-            <h3 className="mb-1 mt-4 text-sm font-semibold text-muted-foreground">
-              Alocação ativa (em fundo)
-            </h3>
-            <div className="rounded-lg border p-4">
-              <div className="grid gap-0.5 sm:grid-cols-2">
-                <InfoRow icon={Users} label="Equipe" value={alocacao.equipe} />
-                <InfoRow icon={User} label="Operador" value={alocacao.operador || "—"} />
-                <InfoRow icon={Ruler} label="CRS" value={alocacao.crs || "—"} />
-                <InfoRow
-                  icon={Calendar}
-                  label="Início da alocação"
-                  value={dataCompleta.format(new Date(alocacao.alocada_em))}
-                />
-              </div>
-              <div className="mt-2 border-t pt-3">
-                <p className="mb-1 text-xs text-muted-foreground">% concluído</p>
-                <ProgressBar percentual={alocacao.percentual} />
-              </div>
-            </div>
+            {/* Se tinha alocação ativa, mostra por baixo */}
+            {alocacao && (
+              <>
+                <h3 className="mb-1 mt-4 text-sm font-semibold text-muted-foreground">
+                  Alocação ativa (em fundo)
+                </h3>
+                <div className="rounded-lg border p-4">
+                  <div className="grid gap-0.5 sm:grid-cols-2">
+                    <InfoRow icon={User} label="Operador" value={alocacao.operador || "—"} />
+                    <InfoRow icon={Ruler} label="CRS" value={alocacao.crs || "—"} />
+                    <InfoRow
+                      icon={Calendar}
+                      label="Início da alocação"
+                      value={dataCompleta.format(new Date(alocacao.alocada_em))}
+                    />
+                  </div>
+                  <div className="mt-2 border-t pt-3">
+                    <p className="mb-1 text-xs text-muted-foreground">% concluído</p>
+                    <ProgressBar percentual={alocacao.percentual} />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </DialogContent>

@@ -28,27 +28,17 @@ export function AllocationForm() {
   const criarAlocacao = useCriarAlocacao();
 
   const [equipamentoId, setEquipamentoId] = React.useState<string>("");
-  const [equipe, setEquipe] = React.useState("");
-  const [responsavel, setResponsavel] = React.useState("");
   const [operador, setOperador] = React.useState("");
   const [crs, setCrs] = React.useState("");
   const [espacamento, setEspacamento] = React.useState("");
-  const [rodovia, setRodovia] = React.useState("");
-  const [kmInicial, setKmInicial] = React.useState("");
-  const [kmFinal, setKmFinal] = React.useState("");
   const [prazoPrevisto, setPrazoPrevisto] = React.useState("");
   const [descricao, setDescricao] = React.useState("");
 
   function limpar() {
     setEquipamentoId("");
-    setEquipe("");
-    setResponsavel("");
     setOperador("");
     setCrs("");
     setEspacamento("");
-    setRodovia("");
-    setKmInicial("");
-    setKmFinal("");
     setPrazoPrevisto("");
     setDescricao("");
   }
@@ -58,10 +48,6 @@ export function AllocationForm() {
 
     if (!equipamentoId) {
       toast.error("Selecione um equipamento.");
-      return;
-    }
-    if (!equipe.trim() || !responsavel.trim()) {
-      toast.error("Informe a equipe e o responsável.");
       return;
     }
     if (!operador.trim()) {
@@ -76,21 +62,16 @@ export function AllocationForm() {
     criarAlocacao.mutate(
       {
         equipamento_id: equipamentoId,
-        equipe: equipe.trim(),
-        responsavel: responsavel.trim(),
         operador: operador.trim(),
         crs: crs.trim() || undefined,
         espacamento: espacamento.trim() || undefined,
-        rodovia: rodovia.trim() || undefined,
-        km_inicial: kmInicial ? Number(kmInicial) : null,
-        km_final: kmFinal ? Number(kmFinal) : null,
         prazo_previsto: prazoPrevisto || null,
         percentual: 0,
         descricao: descricao.trim() || undefined,
       },
       {
         onSuccess: () => {
-          toast.success("Equipamento alocado à equipe.");
+          toast.success("Equipamento alocado.");
           limpar();
         },
         onError: (err) => toast.error(err.message),
@@ -103,12 +84,12 @@ export function AllocationForm() {
       <CardHeader>
         <CardTitle>Alocar equipamento</CardTitle>
         <CardDescription>
-          Vincule um equipamento disponível a uma equipe de campo.
+          Vincule um equipamento disponível a uma operação de campo.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
-          {/* Dropdown de equipamentos lendo do banco */}
+          {/* Dropdown de equipamentos */}
           <div className="grid gap-2">
             <Label htmlFor="equipamento">Equipamento</Label>
             <Select value={equipamentoId} onValueChange={setEquipamentoId}>
@@ -141,30 +122,7 @@ export function AllocationForm() {
             )}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="grid gap-2">
-              <Label htmlFor="equipe">Equipe</Label>
-              <Input
-                id="equipe"
-                placeholder="Ex.: Equipe Norte 02"
-                value={equipe}
-                onChange={(e) => setEquipe(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="responsavel">Responsável</Label>
-              <Input
-                id="responsavel"
-                placeholder="Líder de campo"
-                value={responsavel}
-                onChange={(e) => setResponsavel(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          {/* v2: Operador + Prazo previsto */}
+          {/* Operador + Prazo previsto */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
               <Label htmlFor="operador">Operador responsável</Label>
@@ -188,7 +146,7 @@ export function AllocationForm() {
             </div>
           </div>
 
-          {/* v3: CRS + Espaçamento */}
+          {/* CRS + Espaçamento */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
               <Label htmlFor="crs">CRS</Label>
@@ -206,44 +164,6 @@ export function AllocationForm() {
                 placeholder="Ex.: 20m"
                 value={espacamento}
                 onChange={(e) => setEspacamento(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="grid gap-2">
-              <Label htmlFor="rodovia">Rodovia</Label>
-              <Input
-                id="rodovia"
-                placeholder="Ex.: BR-381"
-                value={rodovia}
-                onChange={(e) => setRodovia(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="km-inicial">km inicial</Label>
-              <Input
-                id="km-inicial"
-                type="number"
-                inputMode="decimal"
-                step="0.001"
-                min="0"
-                placeholder="0,000"
-                value={kmInicial}
-                onChange={(e) => setKmInicial(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="km-final">km final</Label>
-              <Input
-                id="km-final"
-                type="number"
-                inputMode="decimal"
-                step="0.001"
-                min="0"
-                placeholder="0,000"
-                value={kmFinal}
-                onChange={(e) => setKmFinal(e.target.value)}
               />
             </div>
           </div>
