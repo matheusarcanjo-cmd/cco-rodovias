@@ -14,32 +14,20 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
 
 export function LoginScreen() {
-  const { signIn, signUp } = useAuth();
-  const [isRegister, setIsRegister] = React.useState(false);
+  const { signIn } = useAuth();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
     setSubmitting(true);
 
-    if (isRegister) {
-      const { error } = await signUp(email, password);
-      if (error) {
-        setError(error);
-      } else {
-        setSuccess("Conta criada. Você já está logado.");
-      }
-    } else {
-      const { error } = await signIn(email, password);
-      if (error) {
-        setError("E-mail ou senha inválidos. Verifique e tente novamente.");
-      }
+    const { error } = await signIn(email, password);
+    if (error) {
+      setError("E-mail ou senha inválidos. Verifique e tente novamente.");
     }
 
     setSubmitting(false);
@@ -51,7 +39,6 @@ export function LoginScreen() {
         <ThemeToggle />
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-6 p-4">
-        {/* Banner Strata */}
         <div className="w-full max-w-lg overflow-hidden rounded-xl shadow-2xl">
           <img
             src="/strata-banner.png"
@@ -64,9 +51,7 @@ export function LoginScreen() {
           <CardHeader className="items-center text-center">
             <CardTitle className="text-xl">CCO - Strata Engenharia</CardTitle>
             <CardDescription>
-              {isRegister
-                ? "Crie sua conta para acessar o painel."
-                : "Acesse com sua conta operacional para entrar no painel."}
+              Acesse com sua conta operacional para entrar no painel.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -88,8 +73,8 @@ export function LoginScreen() {
                 <Input
                   id="password"
                   type="password"
-                  autoComplete={isRegister ? "new-password" : "current-password"}
-                  placeholder="Mínimo 6 caracteres"
+                  autoComplete="current-password"
+                  placeholder="Sua senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -97,28 +82,11 @@ export function LoginScreen() {
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              {success && (
-                <p className="text-sm text-status-disponivel">{success}</p>
-              )}
               <Button type="submit" disabled={submitting} className="w-full">
                 {submitting && <Loader2 className="animate-spin" />}
-                {isRegister ? "Criar conta" : "Entrar"}
+                Entrar
               </Button>
             </form>
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              {isRegister ? "Já tem uma conta?" : "Não tem conta?"}{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsRegister(!isRegister);
-                  setError(null);
-                  setSuccess(null);
-                }}
-                className="font-medium text-primary underline-offset-4 hover:underline"
-              >
-                {isRegister ? "Fazer login" : "Criar conta"}
-              </button>
-            </p>
           </CardContent>
         </Card>
       </div>
