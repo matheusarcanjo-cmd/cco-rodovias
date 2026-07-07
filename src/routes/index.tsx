@@ -5,6 +5,7 @@ import { AllocationForm } from "@/components/allocation-form";
 import { ActiveAllocations } from "@/components/active-allocations";
 import { EquipmentTable } from "@/components/equipment-table";
 import { ActivityHistory } from "@/components/activity-history";
+import { LevantamentosFinalizados } from "@/components/levantamentos-finalizados";
 import { useEquipamentos } from "@/hooks/use-equipamentos";
 import { useRole } from "@/hooks/use-role";
 
@@ -98,6 +99,8 @@ function DashboardPage() {
       <EquipmentTable />
 
       <ActiveAllocations />
+
+      <LevantamentosFinalizados />
 
       {canAct && <ActivityHistory />}
     </div>

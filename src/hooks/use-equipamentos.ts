@@ -55,6 +55,22 @@ export function useAlocacoesAtivas() {
   });
 }
 
+export function useLevantamentosFinalizados() {
+  return useQuery({
+    queryKey: ["alocacoes", "finalizadas"],
+    queryFn: async (): Promise<AlocacaoComEquipamento[]> => {
+      const { data, error } = await supabase
+        .from("alocacoes")
+        .select("*, equipamentos ( id, codigo, tipo, status )")
+        .not("encerrada_em", "is", null)
+        .eq("percentual", 100)
+        .order("encerrada_em", { ascending: true });
+      if (error) throw new Error(error.message);
+      return data as unknown as AlocacaoComEquipamento[];
+    },
+  });
+}
+
 /** Busca a alocação ativa de um equipamento específico (para o modal de detalhes). */
 export function useAlocacaoDoEquipamento(equipamentoId: string | null) {
   return useQuery({
