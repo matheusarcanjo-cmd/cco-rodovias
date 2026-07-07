@@ -8,8 +8,11 @@ export type UserRole = "admin" | "operador" | "viewer";
 
 export type MotivoOcorrencia =
   | "Chuva"
-  | "Manutenção no trecho"
-  | "Obra"
+  | "Pare/siga"
+  | "Neblina"
+  | "Equipamento"
+  | "Veículo"
+  | "Colaborador"
   | "Outros";
 
 export type Equipamento = {

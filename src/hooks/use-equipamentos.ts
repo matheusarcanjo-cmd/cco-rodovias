@@ -212,7 +212,7 @@ export function useRegistrarOcorrencia() {
   return useMutation({
     mutationFn: async (args: {
       equipamentoId: string;
-      motivo: MotivoOcorrencia;
+      motivo: string;
     }): Promise<Equipamento> => {
       const { data, error } = await supabase.rpc("registrar_ocorrencia", {
         p_equipamento_id: args.equipamentoId,

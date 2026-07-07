@@ -23,8 +23,18 @@ import type { MotivoOcorrencia } from "@/types/database";
 
 const MOTIVOS: MotivoOcorrencia[] = [
   "Chuva",
-  "Manutenção no trecho",
-  "Obra",
+  "Pare/siga",
+  "Neblina",
+  "Equipamento",
+  "Veículo",
+  "Colaborador",
+  "Outros",
+];
+
+const MOTIVOS_COM_DETALHE: MotivoOcorrencia[] = [
+  "Equipamento",
+  "Veículo",
+  "Colaborador",
   "Outros",
 ];
 
@@ -39,7 +49,10 @@ export function OcorrenciaModal({
 }: OcorrenciaModalProps) {
   const [open, setOpen] = React.useState(false);
   const [motivo, setMotivo] = React.useState<string>("");
+  const [detalhamento, setDetalhamento] = React.useState("");
   const registrar = useRegistrarOcorrencia();
+
+  const exigeDetalhe = MOTIVOS_COM_DETALHE.includes(motivo as MotivoOcorrencia);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,14 +60,24 @@ export function OcorrenciaModal({
       toast.error("Selecione o motivo da ocorrência.");
       return;
     }
+    if (exigeDetalhe && !detalhamento.trim()) {
+      toast.error("Informe o detalhamento da ocorrência.");
+      return;
+    }
+
+    const motivoFinal = exigeDetalhe && detalhamento.trim()
+      ? `${motivo}: ${detalhamento.trim()}`
+      : motivo;
+
     registrar.mutate(
-      { equipamentoId, motivo: motivo as MotivoOcorrencia },
+      { equipamentoId, motivo: motivoFinal },
       {
         onSuccess: () => {
           toast.success(
             `Ocorrência registrada para ${codigoEquip}. A alocação segue ativa.`
           );
           setMotivo("");
+          setDetalhamento("");
           setOpen(false);
         },
         onError: (err) => toast.error(err.message),
@@ -83,10 +106,18 @@ export function OcorrenciaModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="grid gap-5 pt-2">
+        <form onSubmit={handleSubmit} className="grid gap-4 pt-2">
           <div className="grid gap-2">
             <Label htmlFor="motivo-ocorrencia">Motivo da ocorrência</Label>
-            <Select value={motivo} onValueChange={setMotivo}>
+            <Select
+              value={motivo}
+              onValueChange={(v) => {
+                setMotivo(v);
+                if (!MOTIVOS_COM_DETALHE.includes(v as MotivoOcorrencia)) {
+                  setDetalhamento("");
+                }
+              }}
+            >
               <SelectTrigger id="motivo-ocorrencia">
                 <SelectValue placeholder="Selecione o motivo" />
               </SelectTrigger>
@@ -99,6 +130,29 @@ export function OcorrenciaModal({
               </SelectContent>
             </Select>
           </div>
+
+          {exigeDetalhe && (
+            <div className="grid gap-2">
+              <Label htmlFor="oc-detalhamento">Detalhamento</Label>
+              <textarea
+                id="oc-detalhamento"
+                rows={3}
+                placeholder={
+                  motivo === "Equipamento"
+                    ? "Descreva o problema com o equipamento..."
+                    : motivo === "Veículo"
+                      ? "Descreva o problema com o veículo..."
+                      : motivo === "Colaborador"
+                        ? "Descreva a situação do colaborador..."
+                        : "Descreva o motivo da ocorrência..."
+                }
+                value={detalhamento}
+                onChange={(e) => setDetalhamento(e.target.value)}
+                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                required
+              />
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-1">
             <Button
